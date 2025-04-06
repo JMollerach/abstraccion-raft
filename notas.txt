@@ -1,0 +1,25 @@
+-dumpTrace format file In case of a property violation, formats the TLA+ error trace to the given format format and dumps the output to the specified
+ file file. The file file is relative to the same directory as the main spec. At the time of writing, TLC supports the tla and the json formats. 
+ To dump to multiple formats, the -dumpTrace parameter may appear multiple times. The git commits 1eb815620 and 386eaa19f show that adding new formats 
+ is easy.
+
+Example: -dumpTrace tla file.tla -dumpTrace json file.json.
+
+-dump format file The format parameter can be omitted, or it can be a comma-separated list beginning with dot that may also contain any subset of 
+colorize, actionlabels, and constrained. If format is omitted, TLC writes a list of all reachable states, described by TLA+ formulas, on file. 
+Otherwise, TLC writes the state graph in dot format, the input format of the GraphViz program for displaying graphs. The parameter colorize indicates 
+that state transitions should be colored according to the action generating the transition, and actionlabels indicates that they should be labeled 
+with the name of the action. The parameter constrained causes TLC to include states in the dot file that are excluded from the model via a state or 
+action constraint.
+
+Example: -dump dot,colorize,actionlabels file.dot.
+
+-tool Tells TLC to print its output in a format to be read by a program such as the Toolbox.
+
+java -jar "D:\Lic\BICC\TLA\tla2tools.jar" -workers 8 -deadlock -userFile prints -continue -config .\Raft.cfg .\RaftVanlightly.tla
+
+java -D"tlc2.tool.fp.FPSet.impl=tlc2.tool.fp.OffHeapDiskFPSet" -D"tlc2.tool.ModelChecker.BAQueue=true" -jar "D:\Lic\BICC\TLA\tla2tools.jar" -workers 8 -deadlock -userFile printsboosted -continue -config .\config.cfg .\extension.tla
+
+lo voy a correr pero solo los estados que me interesan porque explota
+
+java -D"tlc2.tool.fp.FPSet.impl=tlc2.tool.fp.OffHeapDiskFPSet" -D"tlc2.tool.ModelChecker.BAQueue=true" -jar "D:\Lic\BICC\TLA\tla2tools.jar" -workers 8 -deadlock -userFile printsboosted2 -continue -config .\config.cfg .\extension.tla > $null 2>&1
