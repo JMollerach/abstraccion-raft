@@ -1,0 +1,9 @@
+digraph Estados {
+    "candidate\nNotVotesInQuorum" -> "candidate\nNotVotesInQuorum" [label="RequestVote"];
+    "candidate\nVotesInQuorum" -> "candidate\nNotVotesInQuorum" [label="RequestVote"];
+    "follower" -> "candidate\nNotVotesInQuorum" [label="RequestVote"];
+    "leader\nNotMatchingQuorum\nLogUpToDate";
+    "leader\nMatchingQuorum\nLogUpToDate";
+    "leader\nNotMatchingQuorum\nNotLogUpToDate";
+    "leader\nMatchingQuorum\nNotLogUpToDate";
+}

@@ -1,29 +1,23 @@
-import graphviz
+import re
 
-states =        {"follower":"/\\ state[i] = Follower",
-                 "candidateVotesInQuorum":"/\\ state[i] = Candidate /\\ votesGranted[i] \\in Quorum",
-                 "candidateNotVotesInQuorum":"/\\ state[i] = Candidate /\\ \\lnot(votesGranted[i] \\in Quorum)",
-                 "leaderNotMatchingQuorumLogUpToDate":"/\\ state[i] = Leader /\\ \\lnot({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum} /= {} /\\ log[i][Max({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum})].term = currentTerm[i]) /\\ commitIndex[i] = Len(log[i])",
-                 "leaderMatchingQuorumLogUpToDate":"/\\ state[i] = Leader /\\ {index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum} /= {} /\\ log[i][Max({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum})].term = currentTerm[i] /\\ commitIndex[i] = Len(log[i])",
-                 "leaderNotMatchingQuorumNotLogUpToDate":"/\\ state[i] = Leader /\\ \\lnot({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum} /= {} /\\ log[i][Max({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum})].term = currentTerm[i]) /\\ \\lnot(commitIndex[i] = Len(log[i]))",
-                 "leaderMatchingQuorumNotLogUpToDate":"/\\ state[i] = Leader /\\ {index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum} /= {} /\\ log[i][Max({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum})].term = currentTerm[i] /\\ \\lnot(commitIndex[i] = Len(log[i]))"}
+# Usamos un set para guardar las transiciones únicas
+transiciones_unicas = set()
 
-transitions = {"RequestVote": "RequestVote(i)",
-               "Restart": "Restart(i)",
-               "AppendEntries": "(\\E j \\in Server : AppendEntries(i, j))",
-               "BecomeLeader":"BecomeLeader(i)",
-               "ClientRequest":"(\\E v \\in Value : ClientRequest(i, v))",
-               "TrivialAdvanceCommitIndex":"\\lnot(/\\ {index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum} /= {} \n                /\\ log[i][Max({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum})].term = currentTerm[i]) \n       /\\ AdvanceCommitIndex(i)",
-               "NoTrivialAdvanceCommitIndex":"{index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum} /= {} \n       /\\ log[i][Max({index \\in 1..Len(log[i]) : ({i} \\cup {k \\in Server : /\\ matchIndex[i][k] >= index }) \\in Quorum})].term = currentTerm[i] \n       /\\ AdvanceCommitIndex(i)"}
+with open("printsboostedonlyrestart", "r") as f:
+    for linea in f:
+        linea = linea.strip().strip('"')
+        match = re.match(r'(.*)With(.*)To(.*)', linea)
+        if match:
+            origen = match.group(1)
+            transicion = match.group(2)
+            destino = match.group(3)
 
+            # Guardamos una tupla que representa la transición
+            transiciones_unicas.add((origen, transicion, destino))
 
-def generate_digraph():
-    dot = graphviz.Digraph()    
-    for flecha in etiquetas:
-        dot.edge(
-            flecha[0].replace("-", "\\n"),
-            flecha[1].replace("-", "\\n"),
-            label="\\n".join(etiquetas[flecha]),
-            fontsize="10")
-    dot.render(f"{ruta_archivos_salidas}/abstraccion.dot")
-    registro(f"Digrafo guardado en {ruta_archivos_salidas}/abstraccion.dot[.pdf]")
+# Ahora escribimos el .dot solo con las transiciones únicas
+with open("grafo.dot", "w") as f:
+    f.write("digraph Estados {\n")
+    for origen, transicion, destino in sorted(transiciones_unicas):
+        f.write(f'    "{origen}" -> "{destino}" [label="{transicion}"];\n')
+    f.write("}\n")

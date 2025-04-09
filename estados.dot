@@ -1,0 +1,9 @@
+digraph Estados {
+    follower;
+    candidateVotesInQuorum;
+    candidateNotVotesInQuorum;
+    leaderNotMatchingQuorumLogUpToDate;
+    leaderMatchingQuorumLogUpToDate;
+    leaderNotMatchingQuorumNotLogUpToDate;
+    leaderMatchingQuorumNotLogUpToDate;
+}
