@@ -1,9 +1,28 @@
 digraph Estados {
-    "candidate\nNotVotesInQuorum" -> "candidate\nNotVotesInQuorum" [label="RequestVote"];
-    "candidate\nVotesInQuorum" -> "candidate\nNotVotesInQuorum" [label="RequestVote"];
-    "follower" -> "candidate\nNotVotesInQuorum" [label="RequestVote"];
-    "leader\nNotMatchingQuorum\nLogUpToDate";
-    "leader\nMatchingQuorum\nLogUpToDate";
-    "leader\nNotMatchingQuorum\nNotLogUpToDate";
-    "leader\nMatchingQuorum\nNotLogUpToDate";
+    rankdir=TB;
+    "candidateNotVotesInQuorum" -> "candidateNotVotesInQuorum" [label="RequestVote"];
+    "candidateNotVotesInQuorum" -> "follower" [label="Restart"];
+    "candidateNotVotesInQuorum" -> "follower" [label="UpdateTerm"];
+    "candidateVotesInQuorum" -> "leaderNotMatchingQuorumLogUpdated" [label="BecomeLeader"];
+    "candidateVotesInQuorum" -> "leaderNotMatchingQuorumNotLogUpdated" [label="BecomeLeader"];
+    "candidateVotesInQuorum" -> "candidateNotVotesInQuorum" [label="RequestVote"];
+    "candidateVotesInQuorum" -> "follower" [label="Restart"];
+    "candidateVotesInQuorum" -> "follower" [label="UpdateTerm"];
+    "follower" -> "candidateNotVotesInQuorum" [label="RequestVote"];
+    "follower" -> "follower" [label="Restart"];
+    "follower" -> "follower" [label="UpdateTerm"];
+    "leaderMatchingQuorumLogUpdated" -> "leaderMatchingQuorumLogUpdated" [label="AppendEntries"];
+    "leaderMatchingQuorumLogUpdated" -> "follower" [label="Restart"];
+    "leaderMatchingQuorumLogUpdated" -> "follower" [label="UpdateTerm"];
+    "leaderMatchingQuorumNotLogUpdated" -> "leaderMatchingQuorumNotLogUpdated" [label="AppendEntries"];
+    "leaderMatchingQuorumNotLogUpdated" -> "leaderMatchingQuorumLogUpdated" [label="NoTrivialAdvanceCommitIndex"];
+    "leaderMatchingQuorumNotLogUpdated" -> "follower" [label="Restart"];
+    "leaderMatchingQuorumNotLogUpdated" -> "follower" [label="UpdateTerm"];
+    "leaderNotMatchingQuorumLogUpdated" -> "leaderNotMatchingQuorumLogUpdated" [label="AppendEntries"];
+    "leaderNotMatchingQuorumLogUpdated" -> "leaderNotMatchingQuorumNotLogUpdated" [label="ClientRequest"];
+    "leaderNotMatchingQuorumLogUpdated" -> "follower" [label="Restart"];
+    "leaderNotMatchingQuorumLogUpdated" -> "follower" [label="UpdateTerm"];
+    "leaderNotMatchingQuorumNotLogUpdated" -> "leaderNotMatchingQuorumNotLogUpdated" [label="AppendEntries"];
+    "leaderNotMatchingQuorumNotLogUpdated" -> "follower" [label="Restart"];
+    "leaderNotMatchingQuorumNotLogUpdated" -> "follower" [label="UpdateTerm"];
 }

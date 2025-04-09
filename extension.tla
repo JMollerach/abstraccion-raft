@@ -219,67 +219,67 @@ followerWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
          /\ PrintT("followerWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-followerWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ Restart(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithRestartToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithRestartToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E j \in Server : AppendEntries(i, j))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ BecomeLeader(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E v \in Value : ClientRequest(i, v))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithClientRequestToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -289,70 +289,70 @@ followerWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithRequestVoteToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithRequestVoteToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithRestartToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithRestartToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithAppendEntriesToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithClientRequestToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithClientRequestToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+followerWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -362,70 +362,70 @@ followerWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Se
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("followerWithUpdateTermToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("followerWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ Restart(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithRestartToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -435,70 +435,70 @@ followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i 
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithRestartToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithRestartToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithClientRequestToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-followerWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+followerWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -508,7 +508,7 @@ followerWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("followerWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("followerWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 candidateVotesInQuorumWithRequestVoteTofollower == [][\lnot (\E i \in Server :
@@ -730,67 +730,67 @@ candidateVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E 
          /\ PrintT("candidateVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ Restart(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E j \in Server : AppendEntries(i, j))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ BecomeLeader(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E v \in Value : ClientRequest(i, v))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -800,70 +800,70 @@ candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRestartToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRestartToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -873,70 +873,70 @@ candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lno
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ Restart(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -946,70 +946,70 @@ candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -1019,7 +1019,7 @@ candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 candidateNotVotesInQuorumWithRequestVoteTofollower == [][\lnot (\E i \in Server :
@@ -1241,67 +1241,67 @@ candidateNotVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ Restart(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E j \in Server : AppendEntries(i, j))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ BecomeLeader(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E v \in Value : ClientRequest(i, v))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -1311,70 +1311,70 @@ candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -1384,70 +1384,70 @@ candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ Restart(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -1457,582 +1457,71 @@ candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate =
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithRestartToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithClientRequestToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ RequestVote(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ Restart(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ BecomeLeader(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
                                       /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
@@ -2041,70 +1530,581 @@ leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpTo
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ RequestVote(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ Restart(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ BecomeLeader(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermTofollower == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2114,70 +2114,70 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermTofollower == [][\lnot (\E i \in Se
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermTofollower")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2187,70 +2187,70 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermTocandidateVotesInQuorum == [][\lno
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2260,70 +2260,70 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum == [][\
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2333,70 +2333,70 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDat
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2406,70 +2406,70 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate =
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2479,70 +2479,70 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpTo
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -2552,582 +2552,71 @@ leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDat
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithRestartTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithRestartTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower")
     ELSE FALSE)]_vars
 
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermTofollower == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermTofollower")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
-                                      /\ m.mterm > currentTerm[m.mdest] 
-                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
-                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
-                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
-                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
-       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
-    THEN /\ TRUE 
-         /\ PrintT("leaderNotMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ RequestVote(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithRestartTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ Restart(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E j \in Server : AppendEntries(i, j))
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ BecomeLeader(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithClientRequestTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ (\E v \in Value : ClientRequest(i, v))
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
-       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
-       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
-       /\ AdvanceCommitIndex(i)
-       /\ state'[i] = Follower
-    THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTofollower")
-    ELSE FALSE)]_vars
-
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermTofollower == [][\lnot (\E i \in Server :
-    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
                                       /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
@@ -3136,70 +2625,581 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermTofollower == [][\lnot (\E i \in
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Follower
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermTofollower")
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTofollower")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ RequestVote(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithRestartTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ Restart(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E j \in Server : AppendEntries(i, j))
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ BecomeLeader(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithClientRequestTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E v \in Value : ClientRequest(i, v))
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+                /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
+       /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
+       /\ AdvanceCommitIndex(i)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
+                                      /\ m.mterm > currentTerm[m.mdest] 
+                                      /\ currentTerm'    = [currentTerm EXCEPT ![m.mdest] = m.mterm]
+                                      /\ state'          = [state       EXCEPT ![m.mdest] = Follower]
+                                      /\ votedFor'       = [votedFor    EXCEPT ![m.mdest] = Nil]
+                                      /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRestartTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithClientRequestTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -3209,70 +3209,70 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateVotesInQuorum == [][\
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRestartTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithClientRequestTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -3282,70 +3282,70 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum == [
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermTocandidateNotVotesInQuorum")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -3355,70 +3355,70 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpTo
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -3428,70 +3428,70 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDat
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -3501,70 +3501,70 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogU
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderNotMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRequestVoteToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ Restart(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithRestartToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithRestartToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E j \in Server : AppendEntries(i, j))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithAppendEntriesToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithAppendEntriesToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ BecomeLeader(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithBecomeLeaderToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithBecomeLeaderToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E v \in Value : ClientRequest(i, v))
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithClientRequestToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithClientRequestToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ \lnot(/\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
                 /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} 
        /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] 
        /\ AdvanceCommitIndex(i)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithNoTrivialAdvanceCommitIndexToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
-leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate == [][\lnot (\E i \in Server :
+leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ (\E m \in DOMAIN messages : /\ m.mdest = i 
                                       /\ m.mterm > currentTerm[m.mdest] 
@@ -3574,7 +3574,7 @@ leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpTo
                                       /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, auxVars>>)
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
-         /\ PrintT("leaderMatchingQuorumNotLogUpToDateWithUpdateTermToleaderMatchingQuorumNotLogUpToDate")
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 =============================================================================
