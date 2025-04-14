@@ -73,6 +73,71 @@ followerWithUpdateTermTofollower == [][\lnot (\E i \in Server :
          /\ PrintT("followerWithUpdateTermTofollower")
     ELSE FALSE)]_vars
 
+followerWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
 followerWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
@@ -144,6 +209,71 @@ followerWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
          /\ PrintT("followerWithUpdateTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
 followerWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
@@ -219,6 +349,71 @@ followerWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
          /\ PrintT("followerWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
+followerWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
 followerWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
@@ -290,6 +485,71 @@ followerWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in 
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("followerWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 followerWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -365,6 +625,71 @@ followerWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Ser
          /\ PrintT("followerWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+followerWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 followerWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Follower
        /\ RequestVote(i)
@@ -436,6 +761,71 @@ followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("followerWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 followerWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
@@ -511,6 +901,71 @@ followerWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in 
          /\ PrintT("followerWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+followerWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+followerWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Follower
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("followerWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 candidateVotesInQuorumWithRequestVoteTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
@@ -582,6 +1037,71 @@ candidateVotesInQuorumWithUpdateTermTofollower == [][\lnot (\E i \in Server :
        /\ state'[i] = Follower
     THEN /\ TRUE 
          /\ PrintT("candidateVotesInQuorumWithUpdateTermTofollower")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTofollower")
     ELSE FALSE)]_vars
 
 candidateVotesInQuorumWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
@@ -657,6 +1177,71 @@ candidateVotesInQuorumWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E i \
          /\ PrintT("candidateVotesInQuorumWithUpdateTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
 candidateVotesInQuorumWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
@@ -728,6 +1313,71 @@ candidateVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (\E 
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
          /\ PrintT("candidateVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
 candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -803,6 +1453,71 @@ candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated == [][\l
          /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
@@ -874,6 +1589,71 @@ candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\lnot
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 candidateVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
@@ -949,6 +1729,71 @@ candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated == []
          /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 candidateVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
        /\ RequestVote(i)
@@ -1020,6 +1865,71 @@ candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated == [][\l
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("candidateVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ votesGranted[i] \in Quorum
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 candidateNotVotesInQuorumWithRequestVoteTofollower == [][\lnot (\E i \in Server :
@@ -1095,6 +2005,71 @@ candidateNotVotesInQuorumWithUpdateTermTofollower == [][\lnot (\E i \in Server :
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermTofollower")
     ELSE FALSE)]_vars
 
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
 candidateNotVotesInQuorumWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
@@ -1166,6 +2141,71 @@ candidateNotVotesInQuorumWithUpdateTermTocandidateVotesInQuorum == [][\lnot (\E 
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
 candidateNotVotesInQuorumWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
@@ -1241,6 +2281,71 @@ candidateNotVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum == [][\lnot (
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
 candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
@@ -1312,6 +2417,71 @@ candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated == []
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -1387,6 +2557,71 @@ candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated == [][\l
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 candidateNotVotesInQuorumWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
        /\ RequestVote(i)
@@ -1458,6 +2693,71 @@ candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated ==
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 candidateNotVotesInQuorumWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
@@ -1533,6 +2833,71 @@ candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated == []
          /\ PrintT("candidateNotVotesInQuorumWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Candidate /\ \lnot(votesGranted[i] \in Quorum)
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("candidateNotVotesInQuorumWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -1604,6 +2969,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in 
        /\ state'[i] = Follower
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower")
     ELSE FALSE)]_vars
 
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
@@ -1679,6 +3109,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\l
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -1750,6 +3245,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == []
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -1825,6 +3385,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdat
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -1896,6 +3521,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated 
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
@@ -1971,6 +3661,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUp
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -2042,6 +3797,71 @@ leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdat
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
@@ -2117,6 +3937,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in Ser
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermTofollower")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -2188,6 +4073,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\lnot
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
@@ -2263,6 +4213,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == [][\l
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -2334,6 +4349,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated 
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -2409,6 +4489,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated == 
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
        /\ RequestVote(i)
@@ -2480,6 +4625,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdat
        /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
@@ -2555,6 +4765,71 @@ leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated 
          /\ PrintT("leaderMatchingQuorumLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ commitIndex[i] = Len(log[i])
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -2626,6 +4901,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \
        /\ state'[i] = Follower
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower")
     ELSE FALSE)]_vars
 
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
@@ -2701,6 +5041,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum == []
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -2772,6 +5177,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum ==
        /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -2847,6 +5317,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUp
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -2918,6 +5453,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdat
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
@@ -2993,6 +5593,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLo
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderNotMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -3064,6 +5729,71 @@ leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUp
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ \lnot({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i]) /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderNotMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteTofollower == [][\lnot (\E i \in Server :
@@ -3139,6 +5869,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermTofollower == [][\lnot (\E i \in 
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermTofollower")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Follower
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTofollower")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -3210,6 +6005,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum == [][\l
        /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
     THEN /\ TRUE 
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ votesGranted'[i] \in Quorum
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateVotesInQuorum")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
@@ -3285,6 +6145,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum == []
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermTocandidateNotVotesInQuorum")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Candidate /\ \lnot(votesGranted'[i] \in Quorum)
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermTocandidateNotVotesInQuorum")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -3356,6 +6281,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdat
        /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
     THEN /\ TRUE 
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
@@ -3431,6 +6421,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated 
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumLogUpdated")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ commitIndex'[i] = Len(log'[i])
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -3504,6 +6559,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUp
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderNotMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ \lnot({index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i]) /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderNotMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
 leaderMatchingQuorumNotLogUpdatedWithRequestVoteToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
     IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
        /\ RequestVote(i)
@@ -3575,6 +6695,71 @@ leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdat
        /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
     THEN /\ TRUE 
          /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithUpdateTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ReceivableMessage(m, RequestVoteRequest, LessOrEqualTerm)
+                                      /\ LET j     == m.msource
+                                             logOk == \/ m.mlastLogTerm > LastTerm(log[i])
+                                                      \/ /\ m.mlastLogTerm = LastTerm(log[i])
+                                                         /\ m.mlastLogIndex >= Len(log[i])
+                                             grant == /\ m.mterm = currentTerm[i]
+                                                      /\ logOk
+                                                      /\ votedFor[i] \in {Nil, j}
+                                         IN /\ m.mterm <= currentTerm[i]
+                                            /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+                                               \/ ~grant /\ UNCHANGED votedFor
+                                            /\ Reply([mtype        |-> RequestVoteResponse,
+                                                      mterm        |-> currentTerm[i],
+                                                      mvoteGranted |-> grant,
+                                                      msource      |-> i,
+                                                      mdest        |-> j],
+                                                      m)
+                                            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, 
+                                                           logVars, auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRqLEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
+    ELSE FALSE)]_vars
+
+leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated == [][\lnot (\E i \in Server :
+    IF /\ state[i] = Leader /\ {index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum} /= {} /\ log[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex[i][k] >= index }) \in Quorum})].term = currentTerm[i] /\ \lnot(commitIndex[i] = Len(log[i]))
+       /\ (\E m \in DOMAIN messages : /\ i = m.mdest
+                                      /\ ~m.mvoteGranted
+                                      /\ LET j     == m.msource
+                                         IN
+                                             /\ \/ /\ m.mvoteGranted
+                                                   /\ votesGranted' = [votesGranted EXCEPT ![i] =
+                                                                             votesGranted[i] \cup {j}]
+                                                \/ /\ ~m.mvoteGranted
+                                                   /\ UNCHANGED <<votesGranted>>
+                                             /\ Discard(m)
+                                             /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars,
+                                                             auxVars>>)
+       /\ state'[i] = Leader /\ {index \in 1..Len(log'[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum} /= {} /\ log'[i][Max({index \in 1..Len(log[i]) : ({i} \cup {k \in Server : /\ matchIndex'[i][k] >= index }) \in Quorum})].term = currentTerm'[i] /\ \lnot(commitIndex'[i] = Len(log'[i]))
+    THEN /\ TRUE 
+         /\ PrintT("leaderMatchingQuorumNotLogUpdatedWithHRqVRpNotGrantedEQCurrentTermToleaderMatchingQuorumNotLogUpdated")
     ELSE FALSE)]_vars
 
 =============================================================================
