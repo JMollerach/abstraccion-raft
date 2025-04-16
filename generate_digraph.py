@@ -1,7 +1,8 @@
 import re
+from collections import defaultdict
 
-# Usamos un set para guardar las transiciones únicas
-transiciones_unicas = set()
+# Diccionario que agrupa transiciones por (origen, destino)
+transiciones_por_arista = defaultdict(set)
 
 with open("prints", "r") as f:
     for linea in f:
@@ -12,13 +13,15 @@ with open("prints", "r") as f:
             transicion = match.group(2)
             destino = match.group(3)
 
-            # Guardamos una tupla que representa la transición
-            transiciones_unicas.add((origen, transicion, destino))
+            # Agrupamos las transiciones por (origen, destino)
+            transiciones_por_arista[(origen, destino)].add(transicion)
 
-# Ahora escribimos el .dot solo con las transiciones únicas
+# Ahora escribimos el .dot
 with open("grafo.dot", "w") as f:
     f.write("digraph Estados {\n")
     f.write("    rankdir=TB;\n")
-    for origen, transicion, destino in sorted(transiciones_unicas):
-        f.write(f'    "{origen}" -> "{destino}" [label="{transicion}"];\n')
+    for (origen, destino), transiciones in sorted(transiciones_por_arista.items()):
+        # Unimos las transiciones con saltos de línea (doble backslash)
+        etiqueta = "\\n".join(sorted(transiciones))
+        f.write(f'    "{origen}" -> "{destino}" [label="{etiqueta}"];\n')
     f.write("}\n")
